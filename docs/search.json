@@ -1,0 +1,114 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Hailey Ernest",
+    "section": "",
+    "text": "Education: California Polytechnic State University - B.S. Statistics, Data Science"
+  },
+  {
+    "objectID": "posts/post-with-code/index.html",
+    "href": "posts/post-with-code/index.html",
+    "title": "Post With Code",
+    "section": "",
+    "text": "This is a post with executable code.\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "posts/welcome/index.html",
+    "href": "posts/welcome/index.html",
+    "title": "Welcome To My Blog",
+    "section": "",
+    "text": "This is the first post in a Quarto blog. Welcome!\n\nSince this post doesn’t specify an explicit image, the first image in the post will be used in the listing page of posts."
+  },
+  {
+    "objectID": "projects.html",
+    "href": "projects.html",
+    "title": "Projects",
+    "section": "",
+    "text": "Project - Creat Shiny App\n\n\n\n\n\n\n\nanalysis\n\n\n\n\n\n\n\n\n\n\n\nDec 14, 2023\n\n\nHailey Ernest\n\n\n\n\n\n\n  \n\n\n\n\nOpen-Ended Analysis: National Parks\n\n\n\n\n\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\n\n\nDec 12, 2023\n\n\nHailey Ernest\n\n\n\n\n\n\n  \n\n\n\n\nOpen-Ended Analysis: Minimum Wage\n\n\n\n\n\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\n\n\nNov 2, 2023\n\n\nHailey Ernest\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "posts/post-with-code/index.html#data",
+    "href": "posts/post-with-code/index.html#data",
+    "title": "Open-Ended Analysis",
+    "section": "Data",
+    "text": "Data\n\n#Load in Data and Packages\n#install.packages(\"tidyverse\")\n#install.packages(\"ggplot2\")\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.4     ✔ readr     2.1.5\n✔ forcats   1.0.0     ✔ stringr   1.5.1\n✔ ggplot2   3.5.1     ✔ tibble    3.2.1\n✔ lubridate 1.9.3     ✔ tidyr     1.3.1\n✔ purrr     1.0.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nlibrary(ggplot2)\nmin_wage &lt;- read_csv(\"minimum-wage-data.csv\", show_col_types = FALSE)\n\nThe dataset analyzed is the collection of data from 1968 until 2020 about wages at different government levels in the United States of America. The important values for this analysis will focus on Year, State, Effective.Minimum.Wage.2020.Dollars, and Region (added in next step). We will use these variables to investigate the trend of minimum wage between different areas of the U.S. throughout the years."
+  },
+  {
+    "objectID": "posts/post-with-code/index.html#regions",
+    "href": "posts/post-with-code/index.html#regions",
+    "title": "Open-Ended Analysis",
+    "section": "Regions",
+    "text": "Regions\nThe United States Census Bureau divides the United States into four regions. Based on that information, We will be looking at the regional grouping of the Northeast, the Midwest, the South, and the West for the states to find how minimum wage differ by region.\n\n#Code to add regional groups\nregion_list &lt;- min_wage |&gt;\n  distinct(State)\nwrite.csv(region_list, \"./region_list.csv\")\n\n\n#Code to add new Region variable to data frame\nenriched_region_list &lt;- read_csv(\"region_list1.txt\", show_col_types = FALSE)\n\n\n#Code to merge data sets\nenriched_min_wage &lt;- full_join(min_wage,enriched_region_list)\n\nJoining with `by = join_by(State)`"
+  },
+  {
+    "objectID": "posts/post-with-code/index.html#summary-statistics",
+    "href": "posts/post-with-code/index.html#summary-statistics",
+    "title": "Open-Ended Analysis",
+    "section": "Summary Statistics",
+    "text": "Summary Statistics\nAs our investigation starts, we are creating tables of summary statistics to find the growth and variance of the minimum wage in periods of years. First, we will look at the trend of the regions from 2010 to 2020.\n\nenriched_min_wage |&gt;\n  filter(2010&lt;Year)|&gt;\n  group_by(Region)|&gt;\n  summarise(\n    mean_effective_wage = mean(Effective.Minimum.Wage.2020.Dollars),\n    var_effective_wage = var(Effective.Minimum.Wage.2020.Dollars))|&gt;\n  slice_max(var_effective_wage, n=5)\n\n# A tibble: 5 × 3\n  Region    mean_effective_wage var_effective_wage\n  &lt;chr&gt;                   &lt;dbl&gt;              &lt;dbl&gt;\n1 West                     9.09              2.04 \n2 Northeast                9.36              1.91 \n3 South                    8.30              1.31 \n4 Other                    8.22              0.579\n5 Midwest                  8.30              0.423\n\n\nThen, we will look at the trend of regions from 1968 to 1980.\n\nenriched_min_wage |&gt;\n  filter(1980&gt;Year)|&gt;\n  group_by(Region)|&gt;\n  summarise(\n    mean_effective_wage = mean(Effective.Minimum.Wage.2020.Dollars),\n    var_effective_wage = var(Effective.Minimum.Wage.2020.Dollars))|&gt;\n  slice_max(var_effective_wage, n=5)\n\n# A tibble: 5 × 3\n  Region    mean_effective_wage var_effective_wage\n  &lt;chr&gt;                   &lt;dbl&gt;              &lt;dbl&gt;\n1 West                     9.47              1.88 \n2 Other                    9.32              0.954\n3 Northeast                9.71              0.878\n4 South                    8.98              0.648\n5 Midwest                  8.97              0.624\n\n\nThese summaries will help us understand how differently varied the mean of minimum wage used to be during the 70s compared to the 2010s."
+  },
+  {
+    "objectID": "posts/post-with-code/index.html#visualization",
+    "href": "posts/post-with-code/index.html#visualization",
+    "title": "Open-Ended Analysis",
+    "section": "Visualization",
+    "text": "Visualization\nAs our investigation continues we will analyze visualizations of the trend of mean minimum wage by regions throughout the years. This clearly shows the changes between regions’ minimum wage in the U.S.\n\nenriched_min_wage|&gt;\n  filter(Region != \"Other\")|&gt;\n  group_by(Region, Year)|&gt;\n  summarise(mean_effective_wage = mean(Effective.Minimum.Wage.2020.Dollars))|&gt;\n  ggplot(aes(x=Year, y=mean_effective_wage, color=Region))+\n  geom_line()+\n  labs(x=\"Year\", y=\"Mean Minimum Wage\", title=\"Average Minimum Wage of US Regions from 1968-2020\")\n\n`summarise()` has grouped output by 'Region'. You can override using the\n`.groups` argument.\n\n\n\n\n\nAnd, another trend of distribution of minimum wage by region in the last 10 years of data (2010-2020). This clearly shows changes in distributions of minimum wage and its variance by regions of the U.S.\n\nenriched_min_wage|&gt;\n  filter(Region != \"Other\", Year &gt; 2009)|&gt;\n  ggplot(aes(x=factor(Year), \n             y=Effective.Minimum.Wage.2020.Dollars, \n             color=factor(Region)))+\n  geom_boxplot(outlier.shape = NA)+\n  labs(x=\"Year\", y=\"Effective Minimum Wage (in 2020 Dollars)\", title=\"Minimum Wage of US Regions from 2010-2020 Distribution\")+ \n  guides(color = guide_legend(title = \"Region\"))"
+  },
+  {
+    "objectID": "posts/post-with-code/index.html#analysis",
+    "href": "posts/post-with-code/index.html#analysis",
+    "title": "Open-Ended Analysis",
+    "section": "Analysis:",
+    "text": "Analysis:\nAs we compare the minimum wage between regions, I came up with some interesting insights.\nFrom the summary tables we found that in the recent years of 2010 to 2020 the mean of minimum wage is slightly lower than it was in the years 1968 to 1980, with the Northeast region having the highest minimum wage. As well as, that in the West region there was always a high variety of minimum wages throughout the years and the other regions of the South and Northeast have also adapted a high variety of minimum wages, but in the 1970s they used to have low variety.\nFrom the visualization of the line plot, we found that from about 1975 until 2000 the mean of minimum wages in each region was very similar to one another as shown in the graph. But, from 1968 to about 1975 and from about 2000 to 2020 there was a dramatic change in average minimum wage as the South and Midwest regions have the lowest wages, then the West region, and lastly the Northeast region had a very big growth with the highest wages. From the visualization of the box-plot, we found that from 2010 to 2020 there was a large and clear change in the distribution of the minimum wages between the states in each region. Throughout the years, the distribution of minimum wages became more and more varied, with the West region having the largest range and every other region have larger ranges than its previous year."
+  },
+  {
+    "objectID": "posts/welcome/index.html#data",
+    "href": "posts/welcome/index.html#data",
+    "title": "Open-Ended Analysis: National Parks",
+    "section": "Data",
+    "text": "Data\n\n# code chunk to load packages and import data\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.4     ✔ readr     2.1.5\n✔ forcats   1.0.0     ✔ stringr   1.5.1\n✔ ggplot2   3.5.1     ✔ tibble    3.2.1\n✔ lubridate 1.9.3     ✔ tidyr     1.3.1\n✔ purrr     1.0.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nlibrary(dplyr)\nlibrary(ggplot2)\nlibrary(purrr)\nnational_park &lt;- read.csv(\"national_park_trails.csv\")\n\nThe dataset analyzed is the collection of all of the national parks in the United States, including the state in which each park is located, the date when it was established, its total area, the number of recreation visitors it receives each year, and a description of its key features."
+  },
+  {
+    "objectID": "posts/welcome/index.html#start-exploring",
+    "href": "posts/welcome/index.html#start-exploring",
+    "title": "Open-Ended Analysis: National Parks",
+    "section": "Start Exploring",
+    "text": "Start Exploring\n\nWhat is the length in miles of the fourth longest trail in California?\n\n# Q1 code + output\nnational_park|&gt;\n  filter(state_name == \"California\")|&gt;\n  mutate(length_mi = length*0.000621371) |&gt;\n  slice_max(n = 4, order_by = length_mi)|&gt;\n  slice(4)|&gt;\n  select(name, length_mi)\n\n           name length_mi\n1 Big SEKI Loop  145.1996\n\n\nConsider an “easy” trail to be one that has an elevation gain of less than 500 meters, a distance of less than 5 kilometers, and a difficulty rating below 4.\n\n\nWhich California National Park has most “easy” trails?\n\nnational_park|&gt;\n  mutate(length_km = length*0.001)|&gt;\n  filter(elevation_gain &lt; 500, difficulty_rating &lt; 4, length_km &lt; 5)|&gt;\n  group_by(area_name)|&gt;\n  summarise(easy_trail_num = n())|&gt;\n  slice_max(n=1, order_by = easy_trail_num)\n\n# A tibble: 1 × 2\n  area_name            easy_trail_num\n  &lt;chr&gt;                         &lt;int&gt;\n1 Acadia National Park             87\n\n\n\n\nHow many National Parks contain the word “Mountain” somewhere in their name?\n(If it is an abbreviation, like “Mount” or “Mt”, that counts too.)\n\nnational_park|&gt;\n  filter(str_detect(area_name, \"Mount|Mt|Mountain\"))|&gt;\n  count()\n\n    n\n1 654\n\n\nWrite code to create the np_trails_new object to follow specific criteria.\n\nnp_trails_new &lt;- national_park |&gt;\n  pivot_longer(\n    cols = c(avg_rating, difficulty_rating, popularity, visitor_usage),\n    names_to = \"measure\",\n    values_to = \"score\")\n\n\nnp_trails_new %&gt;%\n  ggplot(aes(x=score)) +\n  geom_density() +\n  facet_wrap(~ measure, scales = 'free') +\n  ggtitle(\"Overall distribution of various trail scores in National parks\")\n\nWarning: Removed 253 rows containing non-finite outside the scale range\n(`stat_density()`).\n\n\n\n\n\n\n\nWrite a functions to help recommend trails to a user.\nThe function will have as its input the dataset and the name of a National Park, and the following optional arguments:\n\nA minimum trail elevation gain (in meters)\nA maximum trail elevation gain (in meters)\nA minimum trail rating\nThe type of trail\n\n\nrecommend_trails &lt;- function(data, park_name, min_elev = 0, max_elev = Inf, min_rating = 0, trl_type = NULL){\n\n  stopifnot(is.data.frame(data),\n            is.numeric(min_elev),\n            is.numeric(max_elev),\n            is.numeric(min_rating))\n  \n  recommended_trails &lt;- data |&gt;\n    filter(area_name == park_name,\n           elevation_gain &gt;= min_elev,\n           elevation_gain &lt;= max_elev,\n           avg_rating &gt;= min_rating)\n\n  if (!missing(trl_type)) {\n    recommended_trails &lt;- recommended_trails |&gt;\n      filter(route_type %in% trl_type)\n  }\n  \n  recommended_trails &lt;- recommended_trails |&gt;\n    select(name)\n  \n  return(recommended_trails)\n}\n\nTest the function with the code below.\n\n## Q5 code - do not change except for the dataset name\nnational_park |&gt; \n  recommend_trails(\"Haleakala National Park\", \n                   min_elev = 1000, \n                   min_rating = 4\n                   )\n\n                                  name\n1 Silversword Loop Via Halemau'u Trail\n2                  Keonehe'ehe'e Trail\n3                          Kaupo Trail"
+  },
+  {
+    "objectID": "posts/welcome/index.html#functional-programming-with-map",
+    "href": "posts/welcome/index.html#functional-programming-with-map",
+    "title": "Open-Ended Analysis: National Parks",
+    "section": "Functional Programming with map",
+    "text": "Functional Programming with map\n\nUse your function to recommend me trails from nearby parks\nI am looking for a trail that is:\n\n1000-3000 meters of elevation (I like mountains, but not too big.)\nRated at least a 4.5 on average\nA loop trail (I don’t like to retrace my steps)\n\nIterate over the following parks to recommend me trails: Yosemite, Joshua Tree, Death Valley, Pinnacles, Lassen, Sequoia, and King’s Canyon.\n\nmap_dfr(.x = c(\"Yosemite National Park\",\n               \"Joshua Tree National Park\",\n               \"Death Valley National Park\",\n               \"Pinnacles National Park\",\n               \"Lassen National Park\",\n               \"Sequoia National Park\",\n               \"King's Canyon National Park\"),\n        ~ recommend_trails(data = national_park,\n                           park_name = .x,\n                           min_elev = 1000,\n                           max_elev = 3000,\n                           min_rating = 4.5,\n                           trl_type = \"loop\"))\n\n                                                                        name\n1                                                            El Capitan Loop\n2                                          Hetch Hetchy Loop via Lake Vernon\n3                                     Four Mile Trail to Panorama Trail Loop\n4                                                        Yosemite Grand Tour\n5                                                           Clouds Rest Loop\n6                                    The Pohono Trail from Inspiration Point\n7                                 Pohono Trail: Glacier Point to Dewey Point\n8                                                     Merced Lake Loop Trail\n9                                           Happy Isles to Cloud's Rest Loop\n10                                           The High Sierra Camp Loop Trail\n11                    Mirror Lake, Snow Creek, and Upper Yosemite Falls Loop\n12                                                       Clark Range Circuit\n13                                                         Merced Lake Trail\n14                                   The Clark Range and Red Peak Pass Trail\n15                                    Jack Main Canyon and Tilden Lake Trail\n16                                Buena Vista Crest Trail to Royal Arch Lake\n17                                            Chilnualna Falls Extended Loop\n18 Happy Isles, Vernall Falls, Half Dome, Tenaya Lake, and Mirror Lakes Loop\n19                          Buena Vista, Royal Arch, and Crescent Lakes Loop\n20   Merced Lake to Half Dome Loop via John Muir, Pack and Cloud Rest Trails\n21                    Tuolome, Sunrise and Merced Lakes, and Vogelslang Loop\n22                                            Taft Point via Four Mile Trail\n23                                  Vogelsang Basin Loop via John Muir Trail\n24                                             Tenaya Lake to Half Dome Loop\n25                                             Cottonwood-Marble Canyon Loop\n26                                   Mineral King to Little Five Lakes Trail\n27                                        Mineral King: Black Rock Pass Loop"
+  },
+  {
+    "objectID": "posts/welcome/index.html#visualization",
+    "href": "posts/welcome/index.html#visualization",
+    "title": "Open-Ended Analysis: National Parks",
+    "section": "Visualization",
+    "text": "Visualization\n\nnational_park |&gt;\n  filter(area_name %in% c(\"Yosemite National Park\", \"Yellowstone National Park\"),\n         avg_rating &gt; 3, \n         !str_detect(features, \"'dogs-no'\"))|&gt;\n  ggplot(aes(x=popularity, y=length, color=area_name))+\n  geom_line()+\n  labs(x = \"Popularity\", \n       y= \"Length (meters)\", \n       title = \"Popularity of Famous Trails By Trail Length\", \n       color=\"National Park\")+\n  scale_color_manual(values = c(\"Yosemite National Park\" = \"brown\", \"Yellowstone National Park\" = \"#CD9600\"))\n\n\n\n\nAfter comparing Yosemite and Yellowstone National Parks, we conclude that Yosemite National Park is better because the parks that have a high average rating while allowing dogs have a low popularity (less crowded) and variety of trail lengths compared to Yellowstone National Parks."
+  },
+  {
+    "objectID": "posts/welcome/index.html#statistical-analysis",
+    "href": "posts/welcome/index.html#statistical-analysis",
+    "title": "Open-Ended Analysis: National Parks",
+    "section": "Statistical Analysis",
+    "text": "Statistical Analysis\nPreforming a statistical analysis to address the research question using Welch Two Sample t-test.\n\npark_data &lt;- national_park %&gt;%\n  filter(area_name %in% c(\"Yosemite National Park\", \"Yellowstone National Park\"))\n\n\n# Q9 statistical model code\nbetter_park &lt;- national_park |&gt;\n  filter(area_name %in% c(\"Yosemite National Park\", \"Yellowstone National Park\"))|&gt;\n  select(area_name, avg_rating, popularity)\n\nt_test_rating_result &lt;- t.test(avg_rating ~ area_name, data = better_park)\nt_test_popularity_result &lt;- t.test(popularity ~ area_name, data = better_park)\n\nprint(t_test_rating_result)\n\n\n    Welch Two Sample t-test\n\ndata:  avg_rating by area_name\nt = -0.51519, df = 461.39, p-value = 0.6067\nalternative hypothesis: true difference in means between group Yellowstone National Park and group Yosemite National Park is not equal to 0\n95 percent confidence interval:\n -0.2977996  0.1740864\nsample estimates:\nmean in group Yellowstone National Park    mean in group Yosemite National Park \n                               4.002193                                4.064050 \n\nprint(t_test_popularity_result)\n\n\n    Welch Two Sample t-test\n\ndata:  popularity by area_name\nt = -3.0583, df = 401.26, p-value = 0.002375\nalternative hypothesis: true difference in means between group Yellowstone National Park and group Yosemite National Park is not equal to 0\n95 percent confidence interval:\n -3.6614668 -0.7961367\nsample estimates:\nmean in group Yellowstone National Park    mean in group Yosemite National Park \n                               7.006884                                9.235686 \n\n\n\nbetter_park|&gt;\n  ggplot(aes(x=area_name, y=popularity)) +  \n  geom_boxplot() + \n  ylab(\"Popularity\") + \n  xlab(\"National Park\") + \n  labs(title=\"Side-by-side Boxplot of Popularity of Famous National Parks\")\n\n\n\n\nBased on the statistical evidence found in the t-test comparing Yellow Stone National Park and Yosemite National Park, we found that when it comes to average rating there was no statistically significant difference between the parks but when it comes to popularity Yosemite had a statistically significant average of 9.235 compared to 7.001 making it the better National Park."
+  },
+  {
+    "objectID": "posts/welcome 2/index.html",
+    "href": "posts/welcome 2/index.html",
+    "title": "Project - Creat Shiny App",
+    "section": "",
+    "text": "{style=“color: red”}"
+  },
+  {
+    "objectID": "posts/welcome 2/index.html#description",
+    "href": "posts/welcome 2/index.html#description",
+    "title": "Project - Creat Shiny App",
+    "section": "Description",
+    "text": "Description\nThis app is an extremely in depth interactive platform analyzing Obesity Rates across the United States.\n\nUsing code, the statistics are chosen by the user\nSelection of Ethnicity, Years, and Percentage intervals affect the graphics\nA density graph of the United states changes colors of states by the criteria\nA time-series graph of the top 3 and bottom 3 states changes by specified criteria\n\nThis analysis is a very eye-opening topic about the health of people in the United States and taking further action is apparent through interacting with ethnicities and years from the data set."
+  }
+]

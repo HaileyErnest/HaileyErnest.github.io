@@ -1,0 +1,205 @@
+---
+title: "Open-Ended Analysis: National Parks"
+author: "Hailey Ernest"
+date: "2023-12-12"
+categories: [code, analysis]
+---
+### Investigating National Parks {style="color: red"}
+
+## Data
+
+```{r setup}
+# code chunk to load packages and import data
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(purrr)
+national_park <- read.csv("national_park_trails.csv")
+```
+
+The dataset analyzed is the collection of all of the national parks in the United States, including the state in which each park is located, the date when it was established, its total area, the number of recreation visitors it receives each year, and a description of its key features.
+
+## Start Exploring
+
+#### What is the length in miles of the fourth longest trail in California?
+
+```{r}
+# Q1 code + output
+national_park|>
+  filter(state_name == "California")|>
+  mutate(length_mi = length*0.000621371) |>
+  slice_max(n = 4, order_by = length_mi)|>
+  slice(4)|>
+  select(name, length_mi)
+```
+
+
+Consider an "easy" trail to be one that has an elevation gain of less than 500 meters, a distance of less than 5 kilometers, and a difficulty rating below 4.
+
+#### Which California National Park has most "easy" trails?
+
+```{r}
+national_park|>
+  mutate(length_km = length*0.001)|>
+  filter(elevation_gain < 500, difficulty_rating < 4, length_km < 5)|>
+  group_by(area_name)|>
+  summarise(easy_trail_num = n())|>
+  slice_max(n=1, order_by = easy_trail_num)
+```
+
+#### How many National Parks contain the word "Mountain" somewhere in their name?
+
+(If it is an abbreviation, like "Mount" or "Mt", that counts too.)
+
+```{r}
+national_park|>
+  filter(str_detect(area_name, "Mount|Mt|Mountain"))|>
+  count()
+```
+Write code to create the np_trails_new object to follow specific criteria.
+
+```{r}
+np_trails_new <- national_park |>
+  pivot_longer(
+    cols = c(avg_rating, difficulty_rating, popularity, visitor_usage),
+    names_to = "measure",
+    values_to = "score")
+```
+
+```{r}
+np_trails_new %>%
+  ggplot(aes(x=score)) +
+  geom_density() +
+  facet_wrap(~ measure, scales = 'free') +
+  ggtitle("Overall distribution of various trail scores in National parks")
+```
+
+#### Write a functions to help recommend trails to a user.
+
+The function will have as its input the dataset and the name of a National Park, and the following optional arguments:
+
+-   A minimum trail elevation gain (in meters)
+-   A maximum trail elevation gain (in meters)
+-   A minimum trail rating
+-   The type of trail
+
+
+```{r}
+recommend_trails <- function(data, park_name, min_elev = 0, max_elev = Inf, min_rating = 0, trl_type = NULL){
+
+  stopifnot(is.data.frame(data),
+            is.numeric(min_elev),
+            is.numeric(max_elev),
+            is.numeric(min_rating))
+  
+  recommended_trails <- data |>
+    filter(area_name == park_name,
+           elevation_gain >= min_elev,
+           elevation_gain <= max_elev,
+           avg_rating >= min_rating)
+
+  if (!missing(trl_type)) {
+    recommended_trails <- recommended_trails |>
+      filter(route_type %in% trl_type)
+  }
+  
+  recommended_trails <- recommended_trails |>
+    select(name)
+  
+  return(recommended_trails)
+}
+
+```
+
+Test the function with the code below. 
+```{r}
+## Q5 code - do not change except for the dataset name
+national_park |> 
+  recommend_trails("Haleakala National Park", 
+                   min_elev = 1000, 
+                   min_rating = 4
+                   )
+```
+## Functional Programming with map
+
+#### Use your function to recommend me trails from nearby parks
+
+I am looking for a trail that is:
+
+-   1000-3000 meters of elevation (I like mountains, but not too big.)
+
+-   Rated at least a 4.5 on average
+
+-   A loop trail (I don't like to retrace my steps)
+
+Iterate over the following parks to recommend me trails: Yosemite, Joshua Tree, Death Valley, Pinnacles, Lassen, Sequoia, and King's Canyon.
+
+```{r}
+map_dfr(.x = c("Yosemite National Park",
+               "Joshua Tree National Park",
+               "Death Valley National Park",
+               "Pinnacles National Park",
+               "Lassen National Park",
+               "Sequoia National Park",
+               "King's Canyon National Park"),
+        ~ recommend_trails(data = national_park,
+                           park_name = .x,
+                           min_elev = 1000,
+                           max_elev = 3000,
+                           min_rating = 4.5,
+                           trl_type = "loop"))
+```
+
+# Research Question
+
+Two of the most famous parks in the world are Yosemite and Yellowstone. We are interested in studying if one of the parks has "better" trails than the other. It is up to you to decide what the definition of "better" is that you will use.
+
+## Visualization
+
+```{r}
+national_park |>
+  filter(area_name %in% c("Yosemite National Park", "Yellowstone National Park"),
+         avg_rating > 3, 
+         !str_detect(features, "'dogs-no'"))|>
+  ggplot(aes(x=popularity, y=length, color=area_name))+
+  geom_line()+
+  labs(x = "Popularity", 
+       y= "Length (meters)", 
+       title = "Popularity of Famous Trails By Trail Length", 
+       color="National Park")+
+  scale_color_manual(values = c("Yosemite National Park" = "brown", "Yellowstone National Park" = "#CD9600"))
+```
+After comparing Yosemite and Yellowstone National Parks, we conclude that Yosemite National Park is better because the parks that have a high average rating while allowing dogs have a low popularity (less crowded) and variety of trail lengths compared to Yellowstone National Parks.
+
+## Statistical Analysis
+
+Preforming a statistical analysis to address the research question using Welch Two Sample t-test.
+
+```{r}
+park_data <- national_park %>%
+  filter(area_name %in% c("Yosemite National Park", "Yellowstone National Park"))
+```
+
+```{r}
+# Q9 statistical model code
+better_park <- national_park |>
+  filter(area_name %in% c("Yosemite National Park", "Yellowstone National Park"))|>
+  select(area_name, avg_rating, popularity)
+
+t_test_rating_result <- t.test(avg_rating ~ area_name, data = better_park)
+t_test_popularity_result <- t.test(popularity ~ area_name, data = better_park)
+
+print(t_test_rating_result)
+print(t_test_popularity_result)
+```
+
+```{r}
+better_park|>
+  ggplot(aes(x=area_name, y=popularity)) +  
+  geom_boxplot() + 
+  ylab("Popularity") + 
+  xlab("National Park") + 
+  labs(title="Side-by-side Boxplot of Popularity of Famous National Parks")
+```
+
+Based on the statistical evidence found in the t-test comparing Yellow Stone National Park and Yosemite National Park, we found that when it comes to average rating there was no statistically significant difference between the parks but when it comes to popularity Yosemite had a statistically significant average of 9.235 compared to 7.001 making it the better National Park.

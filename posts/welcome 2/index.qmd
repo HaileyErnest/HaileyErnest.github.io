@@ -1,0 +1,18 @@
+---
+title: "Project - Creat Shiny App"
+author: "Hailey Ernest"
+date: "2023-12-14"
+categories: [analysis]
+image: "pic_shiny.jpg"
+---
+### Click on this link to view:  [shinyapp](https://haileyerneststatistician.shinyapps.io/obesity/) 
+
+## Description
+This app is an extremely in depth interactive platform analyzing Obesity Rates across the United States.
+
+ - Using code, the statistics are chosen by the user
+ - Selection of Ethnicity, Years, and Percentage intervals affect the graphics
+ - A density graph of the United states changes colors of states by the     criteria
+ - A time-series graph of the top 3 and bottom 3 states changes by specified criteria
+ 
+This analysis is a very eye-opening topic about the health of people in the United States and taking further action is apparent through interacting with ethnicities and years from the data set.

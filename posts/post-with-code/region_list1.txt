@@ -1,0 +1,55 @@
+Column 1,State,Region
+1,Alabama,South
+2,Alaska,West
+3,Arizona,West
+4,Arkansas,South
+5,California,West
+6,Colorado,West
+7,Connecticut,Northeast
+8,Delaware,South
+9,District of Columbia,South
+10,Florida,South
+11,Georgia,South
+12,Guam,Other
+13,Hawaii,West
+14,Idaho,West
+15,Illinois,Midwest
+16,Indiana,Midwest
+17,Iowa,Midwest
+18,Kansas,Midwest
+19,Kentucky,South
+20,Louisiana,South
+21,Maine,Northeast
+22,Maryland,South
+23,Massachusetts,Northeast
+24,Michigan,Midwest
+25,Minnesota,Midwest
+26,Mississippi,South
+27,Missouri,Midwest
+28,Montana,West
+29,Nebraska,Midwest
+30,Nevada,West
+31,New Hampshire,Northeast
+32,New Jersey,Northeast
+33,New Mexico,West
+34,New York,Northeast
+35,North Carolina,South
+36,North Dakota,Midwest
+37,Ohio,Midwest
+38,Oklahoma,South
+39,Oregon,West
+40,Pennsylvania,Northeast
+41,Puerto Rico,Other
+42,Rhode Island,Northeast
+43,South Carolina,South
+44,South Dakota,Midwest
+45,Tennessee,South
+46,Texas,South
+47,U.S. Virgin Islands,Other
+48,Utah,West
+49,Vermont,Northeast
+50,Virginia,South
+51,Washington,West
+52,West Virginia,South
+53,Wisconsin,Midwest
+54,Wyoming,West
